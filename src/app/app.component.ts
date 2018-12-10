@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform } from 'ionic-angular';
+import { Nav, Platform, MenuController, App } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -13,13 +13,21 @@ import { AuthService } from '../services/auth.service';
   templateUrl: 'app.html'
 })
 export class MyApp {
+
+  private app;
+	
+  private menu: MenuController;
+  
   @ViewChild(Nav) nav: Nav;
 
   rootPage: any = LoginPage;
 
   pages: Array<{title: string, component: any}>;
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private auth: AuthService) {
+  constructor(app: App, public platform: Platform, menu: MenuController, public statusBar: StatusBar, public splashScreen: SplashScreen, private auth: AuthService) {
+    this.menu = menu;
+		this.app = app;
+    this.platform = platform;
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -37,7 +45,36 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+
+    this.auth.afAuth.authState
+    .subscribe(
+      user => {
+        if (user) {
+          this.rootPage = HomePage;
+        } else {
+          this.rootPage = LoginPage;
+        }
+      },
+      () => {
+        this.rootPage = LoginPage;
+      }
+    );
+
   }
+
+  login() {
+    this.menu.close();
+    this.auth.signOut();
+    this.nav.setRoot(LoginPage);
+  }
+
+  logout() {
+    this.menu.close();
+    this.auth.signOut();
+    this.nav.setRoot(HomePage);
+  }
+
+  
 
   openPage(page) {
     // Reset the content nav to have just this page
