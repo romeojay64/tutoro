@@ -5,11 +5,14 @@
     </button>
     <ion-title>Home</ion-title>
   </ion-navbar>
+  <ion-navbar>
+    <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <h2>Welcome to Banana Project</h2>
-  <button ion-button color="primary" (click)="logout()">Logout</button>
+ 
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  
+  
 </ion-content>
